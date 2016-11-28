@@ -1,0 +1,4 @@
+{
+    "itemDisplayName": "NAT based VM access",
+    "description": "This template deploys VMs behind a loadbalancer that provides NAT access to the VMs through a single public IP address."
+}
