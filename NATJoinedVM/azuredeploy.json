@@ -1,0 +1,119 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "adminUsername": {
+            "type": "string",
+            "metadata": {
+                "description": "Admin username"
+            }
+        },
+        "adminPassword": {
+            "type": "securestring",
+            "metadata": {
+                "description": "Admin password"
+            }
+        }
+    },
+    "variables": {
+        "vmNamePrefix": "labVM3",
+        "nicNamePrefix": "labNic3",
+
+        "networkRGName": "mylab-myNATEnv-351367",
+
+        "storageAccountName": "[concat(uniqueString(resourceGroup().id), 'vhds')]",
+        "availabilitySetName": "labAvSet",
+        "addressPrefix": "10.0.0.0/16",
+        "subnetName": "labSubnet",
+        "subnetPrefix": "10.0.0.0/24",
+        "vnetName": "labVNet",
+        "privateIPAddressType": "Dynamic",
+
+        "lbName":"labLB",
+        "lbID": "[resourceId(variables('networkRGName'), 'Microsoft.Network/loadBalancers',variables('lbName'))]",
+        "frontEndIPConfigID": "[concat(variables('lbID'),'/frontendIPConfigurations/LoadBalancerFrontEnd')]",
+        "backendPoolID": "[concat(variables('lbID'),'/backendAddressPools/BackendPool')]"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Storage/storageAccounts",
+            "name": "[variables('storageAccountName')]",
+            "apiVersion": "2015-06-15",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "accountType": "Standard_RAGRS"
+            }
+        },
+        {
+            "apiVersion": "2016-03-30",
+            "type": "Microsoft.Network/networkInterfaces",
+            "name": "labNic3",
+            "location": "[resourceGroup().location]",
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "IPConfig",
+                        "properties": {
+                            "privateIPAddressVersion": "IPv4",
+                            "privateIPAllocationMethod": "[variables('privateIPAddressType')]",
+                            "subnet": {
+                                "id": "[resourceId(variables('networkRGName'), 'Microsoft.Network/virtualNetworks/subnets',variables('vnetName'), variables('subnetName'))]"
+                            },
+                            "loadBalancerBackendAddressPools": [
+                                {
+                                    "id": "[variables('backendPoolID')]"
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "apiVersion": "2016-03-30",
+            "type": "Microsoft.Compute/virtualMachines",
+            "name": "[variables('vmNamePrefix')]",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
+                "[concat('Microsoft.Network/networkInterfaces/', variables('nicNamePrefix'))]"
+            ],
+            "properties": {
+                "availabilitySet": {
+                    "id": "[resourceId(variables('networkRGName'), 'Microsoft.Compute/availabilitySets',variables('availabilitySetName'))]"
+                },
+                "hardwareProfile": {
+                    "vmSize": "Standard_DS1_v2"
+                },
+                "osProfile": {
+                    "computerName": "[concat(variables('vmNamePrefix'))]",
+                    "adminUsername": "[parameters('adminUsername')]",
+                    "adminPassword": "[parameters('adminPassword')]"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "MicrosoftWindowsServer",
+                        "offer": "WindowsServer",
+                        "sku": "2012-R2-Datacenter",
+                        "version": "latest"
+                    },
+                    "osDisk": {
+                        "name": "osdisk",
+                        "vhd": {
+                            "uri": "[concat(reference(concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName')), '2015-06-15').primaryEndpoints.blob, 'vhds/osdisk', '.vhd')]"
+                        },
+                        "caching": "ReadWrite",
+                        "createOption": "FromImage"
+                    }
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces',concat(variables('nicNamePrefix')))]"
+                        }
+                    ]
+                }
+            }
+        }
+    ]
+}
