@@ -1,0 +1,1 @@
+The files in this folder are meant to create multiple claimable VMs in a lab using the CLI script to execute the template. The parameters include the number of machines and the username/password combination.

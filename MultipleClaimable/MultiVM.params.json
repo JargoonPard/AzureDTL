@@ -1,0 +1,18 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "count": {
+            "value": 3
+        },
+        "newVMName": {
+            "value": "test"
+        },
+        "labName": {
+            "value": "lglabwithNAT"
+        },
+        "password": {
+            "value": "labuser@test1234"
+        }
+    }
+}
