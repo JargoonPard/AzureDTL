@@ -20,6 +20,9 @@
         "expirationDate": {
             "type": "string"
         },
+        "imageName": {
+            "type": "string"
+        },
         "userName": {
             "type": "string",
             "defaultValue": "labuser"
@@ -33,7 +36,8 @@
         "labVirtualNetworkId": "[resourceId('Microsoft.DevTestLab/labs/virtualnetworks', parameters('labName'), variables('labVirtualNetworkName'))]",
         "labVirtualNetworkName": "[concat('Dtl', parameters('labName'))]",
         "vmId": "[resourceId ('Microsoft.DevTestLab/labs/virtualmachines', parameters('labName'), parameters('newVMName'))]",
-        "vmName": "[concat(parameters('labName'), '/', parameters('newVMName'))]"
+        "vmName": "[concat(parameters('labName'), '/', parameters('newVMName'))]",
+        "imageId": "[resourceId ('Microsoft.DevTestLab/labs/customimages', parameters('labName'), parameters('imageName'))]"
     },
     "resources": [
         {
@@ -48,13 +52,7 @@
             "properties": {
                 "labVirtualNetworkId": "[variables('labVirtualNetworkId')]",
                 "notes": "Visual Studio Community 2015 Update 3 with Azure SDK 2.9 on Windows Server 2012 R2",
-                "galleryImageReference": {
-                    "offer": "VisualStudio",
-                    "publisher": "MicrosoftVisualStudio",
-                    "sku": "VS-2015-Comm-VSU3-AzureSDK-291-WS2012R2",
-                    "osType": "Windows",
-                    "version": "latest"
-                },
+                "customImageId": "[variables('imageId')]",
                 "size": "[parameters('size')]",
                 "userName": "[parameters('userName')]",
                 "password": "[parameters('password')]",

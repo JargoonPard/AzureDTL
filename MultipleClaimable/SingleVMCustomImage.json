@@ -2,27 +2,25 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "count": {
-            "type": "int",
-            "defaultValue": "1"
-        },
         "newVMName": {
             "type": "string",
-            "defaultValue": "studentlabvm"
+            "defaultValue": "rbtestfun"
         },
         "labName": {
-            "type": "string"
+            "type": "string",
+            "defaultValue": "DDNetCSTLab"
         },
         "size": {
             "type": "string",
-            "defaultValue": "Standard_DS1_v2"
-        },
-        "expirationDate": {
-            "type": "string"
+            "defaultValue": "Standard_A0"
         },
         "userName": {
             "type": "string",
-            "defaultValue": "labuser"
+            "defaultValue": "roger"
+        },
+        "expirationDate": {
+            "type": "string",
+            "defaultValue": "2017-01-31T08:00:00.000Z"
         },
         "password": {
             "type": "securestring"
@@ -39,42 +37,28 @@
         {
             "apiVersion": "2016-05-15",
             "type": "Microsoft.DevTestLab/labs/virtualmachines",
-            "name": "[concat(variables('vmName'), copyIndex())]",
-            "copy": {
-                "name": "vmcopy",
-                "count": "[parameters('count')]"
-            },
+            "name": "[variables('vmName')]",
             "location": "[resourceGroup().location]",
             "properties": {
                 "labVirtualNetworkId": "[variables('labVirtualNetworkId')]",
-                "notes": "Visual Studio Community 2015 Update 3 with Azure SDK 2.9 on Windows Server 2012 R2",
-                "galleryImageReference": {
-                    "offer": "VisualStudio",
-                    "publisher": "MicrosoftVisualStudio",
-                    "sku": "VS-2015-Comm-VSU3-AzureSDK-291-WS2012R2",
-                    "osType": "Windows",
-                    "version": "latest"
-                },
+                "notes": "SharePointFoundation2013",
+                "customImageId": "/subscriptions/54f7ffcd-9e5a-4a0c-9c0a-62905a1f8296/resourcegroups/ddnetcstlabrg581729/providers/microsoft.devtestlab/labs/ddnetcstlab/customimages/sharepointfoundation2013",
                 "size": "[parameters('size')]",
                 "userName": "[parameters('userName')]",
                 "password": "[parameters('password')]",
                 "isAuthenticationWithSshKey": false,
                 "labSubnetName": "[variables('labSubnetName')]",
                 "disallowPublicIpAddress": true,
-                "storageType": "Premium",
+                "storageType": "Standard",
                 "allowClaim": true,
-                "expirationDate": "[parameters('expirationDate')]",
-                "networkInterface": {
-                    "sharedPublicIpAddressConfiguration": {
-                        "inboundNatRules": [
-                            {
-                                "transportProtocol": "tcp",
-                                "backendPort": 3389
-                            }
-                        ]
-                    }
-                }
+                "expirationDate": "[parameters('expirationDate')]"
             }
         }
-    ]
+    ],
+    "outputs": {
+        "labVMId": {
+            "type": "string",
+            "value": "[variables('vmId')]"
+        }
+    }
 }

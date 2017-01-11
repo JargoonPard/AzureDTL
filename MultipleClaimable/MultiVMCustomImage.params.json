@@ -16,6 +16,9 @@
         },
         "expirationDate": {
             "value": "2017-01-30"
+        },
+        "imageName": {
+            "value": "statistics101"
         }
     }
 }
