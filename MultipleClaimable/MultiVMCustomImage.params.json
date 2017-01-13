@@ -3,22 +3,19 @@
     "contentVersion": "1.0.0.0",
     "parameters": {
         "count": {
-            "value": 3
+            "value": 10
         },
         "newVMName": {
-            "value": "test"
+            "value": "Stats"
         },
         "labName": {
-            "value": "lglabwithNAT"
-        },
-        "password": {
-            "value": "labuser@test1234"
+            "value": "Stat30001"
         },
         "expirationDate": {
             "value": "2017-01-30"
         },
         "imageName": {
-            "value": "statistics101"
+            "value": "stats30001"
         }
     }
 }

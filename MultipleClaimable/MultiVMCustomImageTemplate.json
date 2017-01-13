@@ -15,20 +15,13 @@
         },
         "size": {
             "type": "string",
-            "defaultValue": "Standard_DS1_v2"
+            "defaultValue": "Standard_DS2"
         },
         "expirationDate": {
             "type": "string"
         },
         "imageName": {
             "type": "string"
-        },
-        "userName": {
-            "type": "string",
-            "defaultValue": "labuser"
-        },
-        "password": {
-            "type": "securestring"
         }
     },
     "variables": {
@@ -51,11 +44,8 @@
             "location": "[resourceGroup().location]",
             "properties": {
                 "labVirtualNetworkId": "[variables('labVirtualNetworkId')]",
-                "notes": "Visual Studio Community 2015 Update 3 with Azure SDK 2.9 on Windows Server 2012 R2",
                 "customImageId": "[variables('imageId')]",
                 "size": "[parameters('size')]",
-                "userName": "[parameters('userName')]",
-                "password": "[parameters('password')]",
                 "isAuthenticationWithSshKey": false,
                 "labSubnetName": "[variables('labSubnetName')]",
                 "disallowPublicIpAddress": true,
